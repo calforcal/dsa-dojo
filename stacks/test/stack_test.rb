@@ -21,5 +21,27 @@ class StackTest < Minitest::Test
     assert_equal("A", stack.pop)
   end
 
-  
+  def test_it_peeks
+    stack = Stack.new
+    stack.push("A")
+    stack.push("B")
+    stack.push("C")
+    assert_equal("C", stack.peek)
+    assert_equal("C", stack.pop)
+    assert_equal("B", stack.peek)
+  end
+
+  def test_it_empty
+    stack = Stack.new
+    stack.push("A")
+    stack.push("B")
+    stack.push("C")
+    assert_equal(false, stack.empty)
+    assert_equal("C", stack.pop)
+    assert_equal(false, stack.empty)
+    assert_equal("B", stack.pop)
+    assert_equal(false, stack.empty)
+    assert_equal("A", stack.pop)
+    assert_equal(true, stack.empty)
+  end
 end
