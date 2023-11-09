@@ -44,4 +44,24 @@ class StackTest < Minitest::Test
     assert_equal("A", stack.pop)
     assert_equal(true, stack.empty)
   end
+
+  def test_it_validate
+    stack = Stack.new
+    assert_equal(true, stack.validate("()"))
+    assert_equal(false, stack.validate("("))
+    stack = Stack.new
+    assert_equal("Syntax Error: Missing Opening Brace", stack.validate("())"))
+  end
+
+  def test_it_validates_better
+    stack = Stack.new
+    assert_equal(true, stack.validate("({()})"))
+    assert_equal("Syntax Error: Expecting different closing brace", stack.validate("{}[](]"))
+  end
+
+  def test_it_validates_with_stuff
+    stack = Stack.new
+    assert_equal(true, stack.validate("(MCMC!!!)"))
+    assert_equal("Syntax Error: Expecting different closing brace", stack.validate("{Michael()Motor[Cycle)}"))
+  end
 end
