@@ -1,7 +1,8 @@
 class Stack
-  attr_reader :stack
+  attr_accessor :stack
   def initialize
     @stack = []
+    @valid_tags = ["<p>", "<span>", "<code>", "<body>", "<ul>", "<li>", "<ol>"]
   end
 
   def push(value)
@@ -50,5 +51,60 @@ class Stack
 
   def is_closing_brace?(char)
     ["}", ")", "]"].include?(char)
+  end
+
+  def validate_html(string)
+    # The catch is that it HAS to start with "<"
+    length = string.length - 1
+
+    return if string[0] != "<"
+    return "Syntax Error: Missing opening tag" if string[0, 1] == "</"
+
+    i = 0
+    while string[i] != ">" && i < length
+      push(string[i])
+      i += 1
+    end
+    push(string[i])
+
+    while string[i] != "<" && i < length
+      i += 1
+    end
+
+    return "Open Tag never closed" if i > length
+
+    if string[i + 1] == "/"
+      hash = {}
+      hash[string[i]] = true
+
+      while string[i] != ">" && i < length
+        hash[string[i]] = true
+        i += 1
+      end
+      hash[string[i]] = true
+
+      all_popped = ""
+      popped = ""
+      while peek != "<"
+        popped = pop
+        all_popped.prepend(popped)
+        # return "Didnt equal 1" if !hash[popped]
+        return false if !hash[popped]
+      end
+      popped = pop
+      all_popped.prepend(popped)
+      # return "Didnt Equal 2" if (!hash[popped] || !@valid_tags.include?(all_popped))
+      return false if (!hash[popped] || !@valid_tags.include?(all_popped))
+
+    else
+      push(string[i])
+      while string[i] != ">" && i < length
+        push(string[i])
+        i += 1
+      end
+      push(string[i])
+    end
+    # empty ? true : "Stack not Empty"
+    empty ? true : false
   end
 end

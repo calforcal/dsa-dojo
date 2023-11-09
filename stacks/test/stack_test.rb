@@ -64,4 +64,42 @@ class StackTest < Minitest::Test
     assert_equal(true, stack.validate("(MCMC!!!)"))
     assert_equal("Syntax Error: Expecting different closing brace", stack.validate("{Michael()Motor[Cycle)}"))
   end
+
+  def test_it_html_parse_level_1
+    stack = Stack.new
+    assert_equal(true, stack.validate_html("<p>Hello World</p>"))
+    assert_equal(false, stack.validate_html("<pHello World</p>"))
+    stack.stack = []
+
+    assert_equal(true, stack.validate_html("<span>Hello World</span>"))
+    assert_equal(false, stack.validate_html("<span>pHello World</spa"))
+    stack.stack = []
+
+    assert_equal(true, stack.validate_html("<code>Hello World</code>"))
+    assert_equal(false, stack.validate_html("<>pHello World</code>"))
+  end
+
+  def test_it_parse_level_2
+    stack = Stack.new
+    assert_equal(true, stack.validate_html("<body>Hello World</body>"))
+    assert_equal(false, stack.validate_html("<bodyHello World</body>"))
+    stack.stack = []
+
+    assert_equal(true, stack.validate_html("<ul>Hello World</ul>"))
+    assert_equal(false, stack.validate_html("<ul>pHello World</spa"))
+    stack.stack = []
+
+    assert_equal(true, stack.validate_html("<ol>Hello World</ol>"))
+    assert_equal(false, stack.validate_html("<ul>pHello World</ol>"))
+    stack.stack = []
+
+    assert_equal(true, stack.validate_html("<li>Hello World</li>"))
+    assert_equal(false, stack.validate_html("<lil>pHello World</li>"))
+  end
+
+  def test_it_parse_level_3_nested
+    stack = Stack.new
+    assert_equal(true, stack.validate_html("<body>Hello World</body>"))
+    assert_equal(false, stack.validate_html("<bodyHello World</body>"))
+  end
 end
